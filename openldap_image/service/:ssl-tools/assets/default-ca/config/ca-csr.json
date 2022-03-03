@@ -1,0 +1,16 @@
+{
+  "CN": "SK Broadband Root CA",
+  "key": {
+    "algo": "ecdsa",
+    "size": 384
+  },
+  "names": [
+    {
+      "O": "SK Broadband",
+      "OU": "CloudPC Squad",
+      "L": "Jung-Gu",
+      "ST": "Seoul",
+      "C": "KR"
+    }
+  ]
+}
