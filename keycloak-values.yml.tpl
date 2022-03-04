@@ -13,6 +13,8 @@ auth:
 nodeSelector:
   openstack-control-plane: enabled
 
+podLabels: {"app": "keycloak"}
+
 service:
   type: NodePort
   nodePorts:
