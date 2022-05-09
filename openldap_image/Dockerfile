@@ -25,7 +25,6 @@ RUN echo "path-include /usr/share/doc/krb5*" >> /etc/dpkg/dpkg.cfg.d/docker && a
     && /container/tool/add-service-available :ssl-tools \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get -t buster-backports install -y --no-install-recommends \
     ca-certificates \
-    curl \
     ldap-utils=${OPENLDAP_PACKAGE_VERSION}\* \
     libsasl2-modules \
     libsasl2-modules-db \
@@ -34,10 +33,11 @@ RUN echo "path-include /usr/share/doc/krb5*" >> /etc/dpkg/dpkg.cfg.d/docker && a
     libsasl2-modules-otp \
     libsasl2-modules-sql \
     openssl \
+    curl \
     slapd=${OPENLDAP_PACKAGE_VERSION}\* \
     slapd-contrib=${OPENLDAP_PACKAGE_VERSION}\* \
     krb5-kdc-ldap \
-    && curl -o pqchecker.deb -SL http://www.meddeb.net/pub/pqchecker/deb/8/pqchecker_${PQCHECKER_VERSION}_amd64.deb \
+    && curl -o pqchecker.deb -SL http://meddeb.net/pub/pqchecker/deb/8/pqchecker_${PQCHECKER_VERSION}_amd64.deb \
     && echo "${PQCHECKER_MD5} *pqchecker.deb" | md5sum -c - \
     && dpkg -i pqchecker.deb \
     && rm pqchecker.deb \
@@ -51,7 +51,9 @@ ADD service /container/service
 
 # Use baseimage install-service script
 # https://github.com/osixia/docker-light-baseimage/blob/master/image/tool/install-service
-RUN /container/tool/install-service
+RUN /container/tool/install-service \
+    && cd "/container/service/:ssl-tools/assets/default-ca" \
+    && cfssl gencert -initca config/ca-csr.json | cfssljson -bare default-ca
 
 # Add default env variables
 ADD environment /container/environment/99-default

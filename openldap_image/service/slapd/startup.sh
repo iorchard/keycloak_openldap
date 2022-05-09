@@ -564,18 +564,21 @@ fi
 ln -sf ${CONTAINER_SERVICE_DIR}/slapd/assets/.ldaprc $HOME/.ldaprc
 ln -sf ${CONTAINER_SERVICE_DIR}/slapd/assets/ldap.conf /etc/ldap/ldap.conf
 
-# force OpenLDAP to listen on all interfaces
+# force OpenLDAP to listen on all interfaces if LDAP_BIND_ALL_IFACE is true.
 # We need to make sure that /etc/hosts continues to include the
 # fully-qualified domain name and not just the specified hostname.
 # Without the FQDN, /bin/hostname --fqdn stops working.
-FQDN="$(/bin/hostname --fqdn)"
-if [ "$FQDN" != "$HOSTNAME" ]; then
-    FQDN_PARAM="$FQDN"
-else
-    FQDN_PARAM=""
+LDAP_BIND_ALL_IFACE=${LDAP_BIND_ALL_IFACE:-false}
+if [ "${LDAP_BIND_ALL_IFACE}" == "true" ]; then
+ FQDN="$(/bin/hostname --fqdn)"
+ if [ "$FQDN" != "$HOSTNAME" ]; then
+     FQDN_PARAM="$FQDN"
+ else
+     FQDN_PARAM=""
+ fi
+ ETC_HOSTS=$(cat /etc/hosts | sed "/$HOSTNAME/d")
+ echo "0.0.0.0 $FQDN_PARAM $HOSTNAME" > /etc/hosts
+ echo "$ETC_HOSTS" >> /etc/hosts
 fi
-ETC_HOSTS=$(cat /etc/hosts | sed "/$HOSTNAME/d")
-echo "0.0.0.0 $FQDN_PARAM $HOSTNAME" > /etc/hosts
-echo "$ETC_HOSTS" >> /etc/hosts
 
 exit 0
