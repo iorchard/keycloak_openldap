@@ -1,0 +1,7 @@
+---
+- name: Deploy openldap using docker
+  hosts: all
+  any_errors_fatal: true
+  roles:
+    - {role: iorchard.docker-openldap, tags: ['openldap']}
+...

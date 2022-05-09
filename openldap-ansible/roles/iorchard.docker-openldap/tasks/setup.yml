@@ -1,0 +1,54 @@
+---
+- name: Setup | create ldap env dir
+  ansible.builtin.file:
+    path: "{{ ldap_env_dir }}"
+    state: directory
+    mode: "0700"
+  become: true
+
+- name: Setup | template env file
+  ansible.builtin.template:
+    dest: "{{ item.dest }}"
+    src: "{{ ansible_os_family | lower }}{{ item.dest + '.j2' }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ ldap_templates }}"
+  become: true
+
+- name: Setup | run openldap container
+  community.docker.docker_container:
+    name: "{{ inventory_hostname }}"
+    image: "{{ ldap_image }}"
+    network_mode: host
+    volumes:
+      - "{{ ldap_env_file }}:{{ldap_env_dest_file }}"
+    state: started
+    restart: true
+    recreate: true
+  become: true
+
+- name: Setup | check ldap service availability
+  ansible.builtin.wait_for:
+    host: "{{ ansible_host }}"
+    port: "{{ ldap_port }}"
+    delay: 5
+    sleep: 3
+    timeout: 30
+    state: started
+
+- name: Setup | create organizationalUnits
+  community.general.ldap_entry:
+    server_uri: "ldap://{{ inventory_hostname }}"
+    bind_dn: "cn=admin,{{ ldap_env.basedn }}"
+    bind_pw: "{{ ldap_password }}"
+    dn: "ou={{ item }},{{ ldap_env.basedn }}"
+    objectClass:
+      - organizationalUnit
+    attributes:
+      ou: "{{ item }}"
+    state: present
+  loop: "{{ ldap_ou }}"
+  delegate_to: "{{ groups['all'][0] }}"
+  run_once: true
+...

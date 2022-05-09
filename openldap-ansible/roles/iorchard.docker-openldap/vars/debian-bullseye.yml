@@ -1,0 +1,25 @@
+---
+pkg_state: "latest"
+prereq_pkgs:
+  - apt-transport-https 
+  - ca-certificates 
+  - curl 
+  - gnupg 
+  - lsb-release
+
+docker_keyring:
+  url: "https://download.docker.com/linux/debian/gpg"
+  file: "/usr/share/keyrings/docker-archive-keyring.gpg"
+
+docker_repos:
+  - repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    filename: "docker"
+
+packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - python3-docker
+  - python3-ldap
+  - ldap-utils
+...

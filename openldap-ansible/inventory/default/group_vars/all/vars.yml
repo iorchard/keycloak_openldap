@@ -1,0 +1,23 @@
+---
+ldap_env:
+  org: "iOrchard"
+  domain: "iorchard.net"
+  basedn: "dc=iorchard,dc=net"
+  adminpw: "{{ ldap_password }}"
+  cfssl_org: "iOrchard"
+  cfssl_ou: "Cloud Expert Group"
+  cfssl_loc: "Wonju-Si"
+  cfssl_state: "Gangwon-Do"
+  cfssl_country: "Korea"
+
+######################################################
+# Warn: Do not edit below if you are not an expert.  #
+######################################################
+# global
+ansible_password: "{{ vault_ssh_password }}"
+ansible_become_password: "{{ vault_sudo_password }}"
+ansible_python_interpreter: "/usr/bin/python3"
+
+ldap_password: "{{ vault_ldap_password }}"
+
+...

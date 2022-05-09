@@ -1,0 +1,24 @@
+---
+ldap_port: 389
+ldap_env_dir: "/etc/ldap/env"
+ldap_env_file: "{{ ldap_env_dir }}/env.yaml"
+ldap_templates:
+  - {dest: "{{ ldap_env_file }}", owner: "root", group: "root", mode: "0600"}
+
+ldap_env_dest_file: "/container/environment/01/env.yaml"
+ldap_password: ~
+ldap_env:
+  org: "iOrchard"
+  domain: "iorchard.net"
+  basedn: "dc=iorchard,dc=net"
+  adminpw: "{{ ldap_password }}"
+  cfssl_org: "iOrchard"
+  cfssl_ou: "Cloud Expert Group"
+  cfssl_loc: "Wonju-Si"
+  cfssl_state: "Gangwon-Do"
+  cfssl_country: "Korea"
+ldap_image: "jijisa/openldap:latest"
+ldap_ou:
+  - People
+  - Group
+...

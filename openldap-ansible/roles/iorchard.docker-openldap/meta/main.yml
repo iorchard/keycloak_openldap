@@ -1,0 +1,16 @@
+galaxy_info:
+  namespace: iorchard
+  role_name: docker-openldap
+  author: "Heechul Kim <jijisa@iorchard.net>"
+  description: Ansible Role to install and setup openldap using docker
+  company: iOrchard, Inc.
+  license: Apache-2.0
+  min_ansible_version: "2.12"
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+  galaxy_tags:
+    - system
+
+dependencies: []
