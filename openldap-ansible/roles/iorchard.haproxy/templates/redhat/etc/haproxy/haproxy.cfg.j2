@@ -1,0 +1,214 @@
+global
+    log         127.0.0.1 local2
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     60000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option                  http-server-close
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+
+listen memcached
+    bind {{ keepalived_vip }}:{{ memcached_port }}
+    mode tcp
+    timeout client 8h
+    timeout server 8h
+    balance source
+    option tcpka
+    option tcplog
+    option tcp-check
+    {% for host in groups['controller'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ memcached_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen mariadb
+    bind {{ keepalived_vip }}:{{ mariadb_port }}
+    mode tcp
+    timeout client 8h
+    timeout server 8h
+    balance source
+    option tcpka
+    option tcplog
+    option tcp-check
+    {% for host in groups['mariadb'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ mariadb_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen rabbitmq
+    bind {{ keepalived_vip }}:{{ rabbitmq_port }}
+    mode tcp
+    timeout client 8h
+    timeout server 8h
+    balance source
+    option tcpka
+    option tcplog
+    option tcp-check
+    {% for host in groups['rabbitmq'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ rabbitmq_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen rabbitmq-tls
+    bind {{ keepalived_vip }}:{{ rabbitmq_tls_port }}
+    mode tcp
+    timeout client 8h
+    timeout server 8h
+    balance source
+    option tcpka
+    option tcplog
+    option tcp-check
+    {% for host in groups['rabbitmq'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ rabbitmq_tls_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen keystone
+    bind {{ keepalived_vip }}:{{ keystone_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['keystone'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ keystone_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen glance
+    bind {{ keepalived_vip }}:{{ glance_port }}
+    timeout client          10m
+    timeout server          10m
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['glance'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ glance_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen placement
+    bind {{ keepalived_vip }}:{{ placement_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['placement'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ placement_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen neutron
+    bind {{ keepalived_vip }}:{{ neutron_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['controller'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ neutron_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen cinder
+    bind {{ keepalived_vip }}:{{ cinder_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['cinder'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ cinder_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen nova
+    bind {{ keepalived_vip }}:{{ nova_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['controller'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ nova_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen nova-metadata
+    bind {{ keepalived_vip }}:{{ nova_metadata_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['controller'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ nova_metadata_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen nova-novncproxy
+    bind {% if keepalived_vip_svc != "" %}{{ keepalived_vip_svc }}{% else %}{{ keepalived_vip }}{% endif %}:{{ nova_novncproxy_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /vnc_auto.html
+    {% for host in groups['controller'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ nova_novncproxy_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen horizon
+    bind {% if keepalived_vip_svc != "" %}{{ keepalived_vip_svc }}{% else %}{{ keepalived_vip }}{% endif %}:{{ horizon_http_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /dashboard/auth/login/
+    {% for host in groups['controller'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ horizon_http_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen barbican
+    bind {{ keepalived_vip }}:{{ barbican_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['barbican'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ barbican_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+{% if 'heat' in groups %}
+listen heat
+    bind {{ keepalived_vip }}:{{ heat_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['heat'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ heat_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+
+listen heat-cfn
+    bind {{ keepalived_vip }}:{{ heat_cfn_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['heat'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ heat_cfn_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+{% endif %}
+
+{% if 'magnum' in groups %}
+listen magnum
+    bind {{ keepalived_vip }}:{{ magnum_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['magnum'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ magnum_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+{% endif %}
+
+{% if 'octavia' in groups %}
+listen octavia
+    bind {{ keepalived_vip }}:{{ octavia_port }}
+    option forwardfor except 127.0.0.0/8
+    balance source
+    option httpchk GET /
+    {% for host in groups['octavia'] %}
+    server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ octavia_port }} check inter 5s rise 2 fall 2
+    {% endfor %}
+{% endif %}

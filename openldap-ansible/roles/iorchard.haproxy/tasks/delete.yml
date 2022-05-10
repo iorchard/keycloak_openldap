@@ -1,0 +1,26 @@
+---
+- name: Delete | import common tasks
+  tags:
+    - haproxy
+    - pbos-infra
+  ansible.builtin.import_tasks: "common.yml"
+
+- name: Delete | remove packages
+  tags:
+    - haproxy
+    - pbos-infra
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ packages }}"
+  become: true
+
+- name: Delete | remove directory
+  tags:
+    - haproxy
+    - pbos-infra
+  ansible.builtin.file:
+    path: "{{ haproxy_conf_dir }}"
+    state: absent
+  become: true
+...

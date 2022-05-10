@@ -1,0 +1,22 @@
+vrrp_script check_proxy {
+  script "/etc/keepalived/check_proxy"  # check haproxy/nutcracker process
+  interval 3  # check every 3 seconds
+  timeout 3  # seconds after which script is considered to have failed
+  fall 2  # require 2 failures for KO
+  rise 2  # require 2 succeses for OK
+}
+
+vrrp_instance VI_OPENLDAP {
+  state BACKUP
+  interface {{ keepalived_interface }}
+  virtual_router_id {{ keepalived_vrid }}
+  priority {{ (inventory_hostname == groups['all'][0])|ternary(100, 90) }}
+  advert_int 1
+  nopreempt
+  virtual_ipaddress {
+    {{ keepalived_vip }}
+  }
+   track_script {
+    check_proxy
+  }
+}

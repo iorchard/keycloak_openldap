@@ -4,4 +4,16 @@
   any_errors_fatal: true
   roles:
     - {role: iorchard.docker-openldap, tags: ['openldap']}
+
+- name: Deploy haproxy
+  hosts: all
+  any_errors_fatal: true
+  roles:
+    - {role: iorchard.haproxy, tags: ['haproxy']}
+
+- name: Deploy keepalived
+  hosts: all
+  any_errors_fatal: true
+  roles:
+    - {role: iorchard.keepalived, tags: ['keepalived']}
 ...

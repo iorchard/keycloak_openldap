@@ -1,0 +1,10 @@
+---
+service_name: "keepalived"
+
+# keepalived on mgmt
+keepalived_interface: ""
+keepalived_vip: ""
+
+# keepalived virtual router id
+keepalived_vrid: "{{ 255 | random }}"
+...

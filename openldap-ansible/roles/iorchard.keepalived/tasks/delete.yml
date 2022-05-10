@@ -1,0 +1,28 @@
+---
+- name: Delete | import common tasks
+  tags:
+    - keepalived
+    - pbos-infra
+  ansible.builtin.import_tasks: "common.yml"
+
+- name: Delete | remove packages
+  tags:
+    - keepalived
+    - pbos-infra
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ packages }}"
+  become: true
+
+- name: Delete | remove directory
+  tags:
+    - keepalived
+    - pbos-infra
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/keepalived
+  become: true
+...

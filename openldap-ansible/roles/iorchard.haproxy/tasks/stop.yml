@@ -1,0 +1,17 @@
+---
+- name: Stop | import common tasks
+  tags:
+    - haproxy
+    - pbos-infra
+  ansible.builtin.import_tasks: "common.yml"
+
+- name: Stop | stop service
+  tags:
+    - haproxy
+    - pbos-infra
+  debug:
+    msg: "Stop {{ service_name }} service."
+  changed_when: true
+  notify:
+    - systemctl stop service
+...

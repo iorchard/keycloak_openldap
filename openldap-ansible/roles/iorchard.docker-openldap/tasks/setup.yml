@@ -26,6 +26,7 @@
     state: started
     restart: true
     recreate: true
+    restart_policy: always
   become: true
 
 - name: Setup | check ldap service availability

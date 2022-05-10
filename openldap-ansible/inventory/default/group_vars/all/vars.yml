@@ -10,6 +10,9 @@ ldap_env:
   cfssl_state: "Gangwon-Do"
   cfssl_country: "Korea"
 
+keepalived_interface: "eth0"
+keepalived_vip: "192.168.21.34"
+
 ######################################################
 # Warn: Do not edit below if you are not an expert.  #
 ######################################################
@@ -19,5 +22,4 @@ ansible_become_password: "{{ vault_sudo_password }}"
 ansible_python_interpreter: "/usr/bin/python3"
 
 ldap_password: "{{ vault_ldap_password }}"
-
 ...

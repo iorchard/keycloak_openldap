@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 if [ -f .vaultpass ]; then
         echo "Error) .vaultpass file exists. Remove it first."
         exit 1

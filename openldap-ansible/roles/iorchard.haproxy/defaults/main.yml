@@ -1,0 +1,6 @@
+---
+service_name: "haproxy"
+keepalived_vip: ~
+ldap_port: 389
+ldap_tls_port: 636
+...
