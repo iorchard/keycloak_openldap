@@ -27,7 +27,7 @@ Assumptions
 Install packages.::
 
    $ sudo apt update
-   $ sudo apt install -y python3-venv sshpass
+   $ sudo apt -y install python3-venv sshpass
 
 Install ansible in virtual env
 ----------------------------------
@@ -78,16 +78,19 @@ Edit group_vars/all/vars.yml for your environment.::
 
    $ vi inventory/$MYSITE/group_vars/all/vars.yml
    ---
-  ldap_env:
-    org: "iOrchard"
-    domain: "iorchard.net"
-    basedn: "dc=iorchard,dc=net"
-    adminpw: "{{ ldap_password }}"
-    cfssl_org: "iOrchard"
-    cfssl_ou: "Cloud Expert Group"
-    cfssl_loc: "Wonju-Si"
-    cfssl_state: "Gangwon-Do"
-    cfssl_country: "Korea"
+   ldap_env:
+     org: "iOrchard"
+     domain: "iorchard.net"
+     basedn: "dc=iorchard,dc=net"
+     adminpw: "{{ ldap_password }}"
+     cfssl_org: "iOrchard"
+     cfssl_ou: "Cloud Expert Group"
+     cfssl_loc: "Wonju-Si"
+     cfssl_state: "Gangwon-Do"
+     cfssl_country: "Korea"
+
+   keepalived_interface: "eth0"
+   keepalived_vip: "192.168.21.34"
     
    ######################################################
    # Warn: Do not edit below if you are not an expert.  #
@@ -130,7 +133,7 @@ Run ldapsearch.::
    # numResponses: 2
    # numEntries: 1
 
-The output should show namingcontexts.
+The output should show namingContexts.
 
 Do ldapsearch.::
 
