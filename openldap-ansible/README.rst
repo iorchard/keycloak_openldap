@@ -21,8 +21,9 @@ Assumptions
 
     $ cat /etc/hosts
     127.0.0.1	localhost
-    192.168.21.32 ldap-0
-    192.168.21.33 ldap-1
+    192.168.21.32 ldap-0   # The first openldap server
+    192.168.21.33 ldap-1   # The second openldap server
+    192.168.21.34 openldap # KeepAlived VIP
 
 Install packages.::
 
@@ -74,7 +75,7 @@ Create a vault file for several passwords.::
    LDAP admin password: 
    Encryption successful
 
-Edit group_vars/all/vars.yml for your environment.::
+Edit group_vars/all/vars.yml for your environment before "Warn" comment.::
 
    $ vi inventory/$MYSITE/group_vars/all/vars.yml
    ---
@@ -137,7 +138,7 @@ The output should show namingContexts.
 
 Do ldapsearch.::
 
-    $ ldapsearch -x -h <hostname> -b 'dc=iorchard,dc=net' -D 'cn=admin,dc=iorchard,dc=net' -W
+    $ ldapsearch -x -H ldap://openldap -b 'dc=iorchard,dc=net' -D 'cn=admin,dc=iorchard,dc=net' -W
     Enter LDAP Password:
    # extended LDIF
    #
