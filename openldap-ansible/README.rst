@@ -13,8 +13,7 @@ Assumptions
 
 * The first node is the ansible deployer.
 * Ansible user in every node has a sudo privilege.
-  If the sudo privilege without NOPASSWD, 
-  we will use vault_sudo_pass in ansible vault.
+  we will use vault_sudo_pass in ansible vault for sudo password.
 * Ansible user in every node has the same password.
   We will use vault_ssh_pass in ansible vault.
 * All nodes should be in /etc/hosts on every node.::
@@ -92,7 +91,10 @@ Edit group_vars/all/vars.yml for your environment before "Warn" comment.::
 
    keepalived_interface: "eth0"
    keepalived_vip: "192.168.21.34"
-    
+   
+   # replication setting - if there are two nodes, set it to "true".
+   ldap_replication: "false"
+ 
    ######################################################
    # Warn: Do not edit below if you are not an expert.  #
    ######################################################
@@ -114,7 +116,7 @@ Check
 
 Run ldapsearch.::
 
-    $ ldapsearch -x -h ldap-0  -b '' -s base namingContexts
+   $ ldapsearch -x -H ldap://ldap-0  -b '' -s base namingContexts
    # extended LDIF
    #
    # LDAPv3
