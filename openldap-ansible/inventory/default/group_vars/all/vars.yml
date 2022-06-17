@@ -13,6 +13,9 @@ ldap_env:
 keepalived_interface: "eth0"
 keepalived_vip: "192.168.21.34"
 
+# replication setting - if there are two nodes, set it to "true".
+ldap_replication: "false"
+
 ######################################################
 # Warn: Do not edit below if you are not an expert.  #
 ######################################################
