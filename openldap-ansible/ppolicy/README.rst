@@ -8,7 +8,7 @@ The default password policy setting is in ppolicy.ldif.
 Setup
 ------
 
-#. Load the ppolicy module.::
+* Load the ppolicy module.::
 
     $ ldapmodify -H ldap://openldap \
       -D "cn=admin,cn=config" -W -f ppolicy_module.ldif
@@ -16,7 +16,7 @@ Setup
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
 
-#. Open ppolicy_ou.ldif and modify for your env.::
+* Open ppolicy_ou.ldif and modify for your env.::
 
     dn: ou=Policies,dc=iorchard,dc=net
     ou: Policies
@@ -24,14 +24,14 @@ The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
 The attribute dn should be changed to your env.
    
-#. Add Policies organizationalUnit object.::
+* Add Policies organizationalUnit object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy_ou.ldif
 
 The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
-#. Open ppolicy_overlay.ldif and modify for your env.::
+* Open ppolicy_overlay.ldif and modify for your env.::
 
    dn: olcOverlay=ppolicy,olcDatabase={1}mdb,cn=config
    objectClass: olcOverlayConfig
@@ -44,7 +44,7 @@ The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
 The attribute olcPPolicyDefault should be changed to your env.
 
-#. Add a new ppolicy overlay object.::
+* Add a new ppolicy overlay object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,cn=config" -W -f ppolicy_overlay.ldif
@@ -52,7 +52,7 @@ The attribute olcPPolicyDefault should be changed to your env.
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
 
-#. Create a password policy object.::
+* Create a password policy object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy.ldif
