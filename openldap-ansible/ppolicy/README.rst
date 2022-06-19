@@ -70,11 +70,11 @@ It should fail since we set pwdMinLength to 4.::
 
    $ ldappasswd -H ldap://openldap \
          -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -WAS
-   Old password: 
-   Re-enter old password: 
-   New password: 
-   Re-enter new password: 
-   Enter LDAP Password: 
+   Old password: <current_password>
+   Re-enter old password: <current_password>
+   New password: <new_password>
+   Re-enter new password: <new_password>
+   Enter LDAP Password: <current_password>
    Result: Constraint violation (19)
    Additional info: Password fails quality checking policy
 
