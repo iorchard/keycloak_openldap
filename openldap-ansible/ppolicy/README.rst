@@ -26,8 +26,8 @@ The attribute dn should be changed to your env.
    
 #. Add Policies organizationalUnit object.::
 
-   $ ldapadd -x -H ldap://openldap \
-      -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy_ou.ldif
+    $ ldapadd -x -H ldap://openldap \
+       -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy_ou.ldif
 
 The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
@@ -46,16 +46,16 @@ The attribute olcPPolicyDefault should be changed to your env.
 
 #. Add a new ppolicy overlay object.::
 
-   $ ldapadd -x -H ldap://openldap \
-      -D "cn=admin,cn=config" -W -f ppolicy_overlay.ldif
+    $ ldapadd -x -H ldap://openldap \
+       -D "cn=admin,cn=config" -W -f ppolicy_overlay.ldif
 
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
 
 #. Create a password policy object.::
 
-   $ ldapadd -x -H ldap://openldap \
-      -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy.ldif
+    $ ldapadd -x -H ldap://openldap \
+       -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy.ldif
 
 The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
