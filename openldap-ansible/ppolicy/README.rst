@@ -8,30 +8,29 @@ The default password policy setting is in ppolicy.ldif.
 Setup
 ------
 
-* Load the ppolicy module.::
+Load the ppolicy module.::
 
     $ ldapmodify -H ldap://openldap \
       -D "cn=admin,cn=config" -W -f ppolicy_module.ldif
 
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
-
-* Open ppolicy_ou.ldif and modify for your env.::
+Open ppolicy_ou.ldif and modify for your env.::
 
     dn: ou=Policies,dc=iorchard,dc=net
     ou: Policies
     objectClass: organizationalUnit
 
-The attribute dn should be changed to your env.
+The attribute dn should be changed.
    
-* Add Policies organizationalUnit object.::
+Add Policies organizationalUnit object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy_ou.ldif
 
 The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
-* Open ppolicy_overlay.ldif and modify for your env.::
+Open ppolicy_overlay.ldif and modify for your env.::
 
    dn: olcOverlay=ppolicy,olcDatabase={1}mdb,cn=config
    objectClass: olcOverlayConfig
@@ -42,17 +41,42 @@ The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
    olcPPolicyUseLockout: FALSE
    olcPPolicyForwardUpdates: FALSE
 
-The attribute olcPPolicyDefault should be changed to your env.
+The attribute olcPPolicyDefault should be changed.
 
-* Add a new ppolicy overlay object.::
+Add a new ppolicy overlay object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,cn=config" -W -f ppolicy_overlay.ldif
 
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
+Open ppolicy.ldif and modify for your env.::
 
-* Create a password policy object.::
+    dn: cn=passwordDefault,ou=Policies,dc=iorchard,dc=net
+    objectClass: pwdPolicy
+    objectClass: person
+    objectClass: top
+    cn: passwordDefault
+    sn: passwordDefault
+    pwdAttribute: userPassword
+    pwdCheckQuality: 1
+    pwdMinAge: 0
+    pwdMaxAge: 31536000
+    pwdMinLength: 4
+    pwdInHistory: 0
+    pwdMaxFailure: 10
+    pwdFailureCountInterval: 60
+    pwdLockout: TRUE
+    pwdLockoutDuration: 60
+    pwdAllowUserChange: TRUE
+    pwdExpireWarning: 0
+    pwdGraceAuthNLimit: 0
+    pwdMustChange: FALSE
+    pwdSafeModify: FALSE
+
+The attribute dn should be changed.
+
+Create a password policy object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy.ldif
@@ -84,25 +108,23 @@ since pwdMaxFailure is set to 10.
 Enter the right password within 1 minute but it should fail again 
 since pwdLockoutDuration is set to 60 seconds.::
 
-   $ for i in {1..10};do ldapsearch -H ldap://ldap-0 -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -wa -b 'uid=jijisa,ou=people,dc=iorchard,dc=net';done
+   $ ldapsearch -H ldap://ldap-0 \
+      -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -wa \
+      -b 'uid=jijisa,ou=people,dc=iorchard,dc=net'
    ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   ldap_bind: Invalid credentials (49)
-   $ ldapsearch -H ldap://ldap-0 -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -W -b 'uid=jijisa,ou=people,dc=iorchard,dc=net' -LLL
+   (after 10 failures)
+   $ ldapsearch -H ldap://ldap-0 \
+      -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -W \
+      -b 'uid=jijisa,ou=people,dc=iorchard,dc=net' -LLL
    Enter LDAP Password:
    ldap_bind: Invalid credentials (49)
 
 One minute later, try again with the right password. It will work since
 LockoutDuration is passed.::
 
-   $ ldapsearch -H ldap://ldap-0 -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -W -b 'uid=jijisa,ou=people,dc=iorchard,dc=net' -LLL
+   $ ldapsearch -H ldap://ldap-0 \
+      -D 'uid=jijisa,ou=people,dc=iorchard,dc=net' -W \
+      -b 'uid=jijisa,ou=people,dc=iorchard,dc=net' -LLL
    Enter LDAP Password: 
    dn: uid=jijisa,ou=People,dc=iorchard,dc=net
    uid: jijisa
@@ -113,5 +135,4 @@ LockoutDuration is passed.::
    sn: Kim
    givenName: Heechul
    cn: Heechul Kim
-
 
