@@ -12,6 +12,7 @@ Load the ppolicy module.::
 
     $ ldapmodify -H ldap://openldap \
       -D "cn=admin,cn=config" -W -f ppolicy_module.ldif
+    Enter LDAP Password:
 
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
@@ -27,6 +28,7 @@ Add Policies organizationalUnit object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy_ou.ldif
+    Enter LDAP Password:
 
 The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
@@ -47,6 +49,7 @@ Add a new ppolicy overlay object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,cn=config" -W -f ppolicy_overlay.ldif
+    Enter LDAP Password:
 
 The Password is LDAP_CONFIG_PASSWORD in /etc/ldap/env/env.yaml.
 
@@ -80,6 +83,7 @@ Create a password policy object.::
 
     $ ldapadd -x -H ldap://openldap \
        -D "cn=admin,dc=iorchard,dc=net" -W -f ppolicy.ldif
+    Enter LDAP Password:
 
 The Password is LDAP_ADMIN_PASSWORD in /etc/ldap/env/env.yaml.
 
