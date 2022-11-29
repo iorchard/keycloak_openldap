@@ -1,4 +1,4 @@
-Add Password Policy for OpenLDAP
+Add Password Policy in OpenLDAP
 ====================================
 
 This is the guide to enforce Password Policy for OpenLDAP.

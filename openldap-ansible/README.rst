@@ -116,7 +116,8 @@ Check
 
 Run ldapsearch.::
 
-   $ ldapsearch -x -H ldap://ldap-0  -b '' -s base namingContexts
+   $ ldapsearch -x -H ldap://ldap-0  -b '' -s base namingContexts \
+        -D "cn=admin,cn=config" -W
    # extended LDIF
    #
    # LDAPv3
@@ -177,3 +178,11 @@ Do ldapsearch.::
 
 The output should give 3 entries (numentries: 3).
 
+Addons
+--------
+
+If you want to add password policy,
+go to ppolicy/ and read README.rst there.
+
+If you want to disallow anonymous bind,
+go to anon_bind/ and read README.rst there.
