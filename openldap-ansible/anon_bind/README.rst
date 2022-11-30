@@ -20,8 +20,8 @@ Verify
 -------
 
 Before applying the above configuration, 
-I search with anonymous bind and get the result even if there is no results
-since database access is not allowed for anonymous bind.::
+I search with anonymous bind and get the result even if there is no objects
+since access is not allowed for anonymous bind.::
 
    $ ldapsearch -x -H ldaps://ldap-0
    # extended LDIF
@@ -81,5 +81,4 @@ If I search with admin credential, I get the result.::
    
    # numResponses: 4
    # numEntries: 3
-
 
