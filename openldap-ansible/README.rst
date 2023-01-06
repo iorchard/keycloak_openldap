@@ -141,7 +141,8 @@ The output should show namingContexts.
 
 Do ldapsearch.::
 
-    $ ldapsearch -x -H ldap://openldap -b 'dc=iorchard,dc=net' -D 'cn=admin,dc=iorchard,dc=net' -W
+    $ ldapsearch -x -H ldap://openldap -b 'dc=iorchard,dc=net' \
+        -D 'cn=admin,dc=iorchard,dc=net' -W
     Enter LDAP Password:
    # extended LDIF
    #
@@ -177,6 +178,20 @@ Do ldapsearch.::
    # numEntries: 3
 
 The output should give 3 entries (numentries: 3).
+
+TLS check
+----------
+
+Get CA certificate from the container before you run ldapsearch.::
+
+   $ sudo docker cp <container_name>:/container/service/:ssl-tools/assets/default-ca/default-ca.pem openldap_ca.crt
+
+Do ldapsearch with the certificate.::
+
+    $ env LDAPTLS_CACERT=./openldap_ca.crt ldapsearch -x \
+        -H ldaps://openldap -b 'dc=iorchard,dc=net' \
+        -D 'cn=admin,dc=iorchard,dc=net' -W
+    Enter LDAP Password:
 
 Addons
 --------
