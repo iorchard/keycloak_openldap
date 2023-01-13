@@ -59,15 +59,6 @@ listen ldaps
     option tcpka
     option tcplog
     option tcp-check
-    tcp-check   connect port 636 ssl
-    tcp-check   send-binary 300c0201       # LDAP bind request "<ROOT>" simple
-    tcp-check   send-binary 01             # message ID
-    tcp-check   send-binary 6007           # protocol Op
-    tcp-check   send-binary 0201           # bind request
-    tcp-check   send-binary 03             # LDAP v3
-    tcp-check   send-binary 04008000       # name, simple authentication
-    tcp-check   expect binary 0a0100       # bind response+result code: success
-    tcp-check   send-binary 30050201034200 # unbind request
     {% for host in groups['all'] %}
     server {{ hostvars[host].inventory_hostname }} {{ hostvars[host].ansible_host }}:{{ ldap_tls_port }} check inter 5s rise 2 fall 2
     {% endfor %}
