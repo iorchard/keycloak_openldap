@@ -82,3 +82,14 @@ If I search with admin credential, I get the result.::
    # numResponses: 4
    # numEntries: 3
 
+Allow anonymous bind
+------------------------
+
+If you want to revert back to allow anonymous bind again,
+apply allow_anon_bind.ldif.::
+
+    $ ldapmodify -H ldap://openldap \
+      -D "cn=admin,cn=config" -W -f allow_anon_bind.ldif
+    Enter LDAP Password:
+
+
