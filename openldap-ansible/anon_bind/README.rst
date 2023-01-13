@@ -6,7 +6,7 @@ This is the guide to disallow anonymous bind in openldap.
 Setup
 ------
 
-Execute disallow_anon_bind.ldif using ldapmodify.::
+Apply disallow_anon_bind.ldif using ldapmodify.::
 
     $ ldapmodify -H ldap://openldap \
       -D "cn=admin,cn=config" -W -f disallow_anon_bind.ldif
